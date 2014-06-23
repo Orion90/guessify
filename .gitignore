@@ -1,0 +1,5 @@
+go-spotify-guess
+gin-bin
+tmpfile
+tmp/
+*.mp3
