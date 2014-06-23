@@ -20,7 +20,7 @@ type PlayInfo struct {
 }
 
 var (
-	appKeyPath = flag.String("key", "/home/micke/Downloads/spotify_appkey.key", "path to app.key")
+	appKeyPath = flag.String("key", "spotify_appkey.key", "path to app.key")
 	debug      = flag.Bool("debug", false, "debug output")
 )
 
@@ -48,16 +48,13 @@ func (pa *portAudio) WriteAudio(format spotify.AudioFormat, frames []byte) int {
 	audio := &audio{format, frames}
 
 	if len(frames) == 0 {
-		// println("no frames")
 		return 0
 	}
 
 	select {
 	case pa.buffer <- audio:
-		// println("return", len(frames))
 		return len(frames)
 	default:
-		// println("buffer full")
 		return 0
 	}
 }
@@ -75,15 +72,10 @@ func (pa *portAudio) player(w http.ResponseWriter, done chan struct{}) {
 	if err != nil {
 		chk(err)
 	}
-
-	// fmt.Println(cmd.Output())
 	w.Header().Set("Content-Type", "audio/mpeg")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	// reader.Header().Set("Content-Length", "5000000")
 
-	// reader, _ := os.Create("tmpfile")
-	// defer reader.Close()
 	go func() {
 		cmd.Run()
 		done <- struct{}{}

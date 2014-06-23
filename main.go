@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	_ "time"
 )
 
 var globalSessions *session.Manager
@@ -29,13 +28,10 @@ func main() {
 	m.Map(setSession())
 	m.Use(martini.Static("assets"))
 	m.Use(render.Renderer(render.Options{
-		Directory: "templates", // Specify what path to load the templates from.
-		// Layout:     "layout",                   // Specify a layout template. Layouts can call {{ yield }} to render the current template.
+		Directory:  "templates",                // Specify what path to load the templates from.
 		Extensions: []string{".tmpl", ".html"}, // Specify extensions to load for templates.
-		// Funcs:      []template.FuncMap{AppHelpers}, // Specify helper function maps for templates to access.
-		//Delims:     render.Delims{"{[{", "}]}"}, // Sets delimiters to the specified strings.
-		Charset:    "UTF-8", // Sets encoding for json and html content-types. Default is "UTF-8".
-		IndentJSON: true,    // Output human readable JSON
+		Charset:    "UTF-8",                    // Sets encoding for json and html content-types. Default is "UTF-8".
+		IndentJSON: true,                       // Output human readable JSON
 	}))
 	m.Get("/", index)
 	m.Get("/playlists", checkLogin, playlists)
@@ -82,7 +78,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request, params martini.Params,
 		log.Fatal(err)
 	}
 
-	// Wait for login and expect it to go fine
 	select {
 	case err := <-sp_session.LoginUpdates():
 		if err != nil {
@@ -121,11 +116,10 @@ func playTrack(w http.ResponseWriter, r *http.Request, params martini.Params, se
 	}
 
 	player.Play()
-
+	defer player.Pause()
 	for {
 		select {
 		case <-done:
-			player.Pause()
 			return
 			break
 		default:
