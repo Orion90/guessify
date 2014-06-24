@@ -71,13 +71,11 @@ func (pa *portAudio) player(w http.ResponseWriter, done chan struct{}) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// w.Header().Set("Content-Length", "5000000")
 	// reader.Header().Set("Content-Length", "5000000")
-	defer func() {
-		done <- struct{}{}
-	}()
+
 	go func() {
 		cmd.Run()
 		fmt.Println("CMD done")
-		return
+		done <- struct{}{}
 	}()
 
 	fmt.Fprintf(reader, "FORM")
@@ -113,6 +111,12 @@ func (pa *portAudio) player(w http.ResponseWriter, done chan struct{}) {
 		binary.Write(reader, binary.BigEndian, out)
 
 		nSamples += len(out)
+		select {
+		case <-done:
+			break
+		default:
+		}
+
 	}
 }
 func chk(err error) {
