@@ -69,53 +69,51 @@ func (pa *portAudio) player(w http.ResponseWriter, done chan struct{}) {
 	}
 	w.Header().Set("Content-Type", "audio/mpeg")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// w.Header().Set("Content-Length", "5000000")
 	// reader.Header().Set("Content-Length", "5000000")
 
 	go func() {
 		cmd.Run()
+		fmt.Println("CMD done")
 		done <- struct{}{}
+		return
 	}()
-	go func() {
-		fmt.Fprintf(reader, "FORM")
-		binary.Write(reader, binary.BigEndian, int32(5000000)) //total bytes
-		fmt.Fprintf(reader, "AIFF")
 
-		fmt.Fprintf(reader, "COMM")
+	fmt.Fprintf(reader, "FORM")
+	binary.Write(reader, binary.BigEndian, int32(5000000)) //total bytes
+	fmt.Fprintf(reader, "AIFF")
 
-		binary.Write(reader, binary.BigEndian, int32(18)) //size
-		binary.Write(reader, binary.BigEndian, int16(1))  //channels
-		binary.Write(reader, binary.BigEndian, int32(0))  //number of samples
-		binary.Write(reader, binary.BigEndian, int16(32)) //bits per sample
+	fmt.Fprintf(reader, "COMM")
 
-		reader.Write([]byte{0x40, 0x0e, 0xac, 0x44, 0, 0, 0, 0, 0, 0}) //80-bit sample rate 44100
+	binary.Write(reader, binary.BigEndian, int32(18)) //size
+	binary.Write(reader, binary.BigEndian, int16(1))  //channels
+	binary.Write(reader, binary.BigEndian, int32(0))  //number of samples
+	binary.Write(reader, binary.BigEndian, int16(32)) //bits per sample
 
-		fmt.Fprintf(reader, "SSND")
+	reader.Write([]byte{0x40, 0x0e, 0xac, 0x44, 0, 0, 0, 0, 0, 0}) //80-bit sample rate 44100
 
-		binary.Write(reader, binary.BigEndian, int32(5000000)) //size
-		binary.Write(reader, binary.BigEndian, int32(0))       //offset
-		binary.Write(reader, binary.BigEndian, int32(0))       //block
+	fmt.Fprintf(reader, "SSND")
 
-		nSamples := 0
-		for audio := range pa.buffer {
-			if len(audio.frames) != 2048*2*2 {
-				return
-			}
+	binary.Write(reader, binary.BigEndian, int32(5000000)) //size
+	binary.Write(reader, binary.BigEndian, int32(0))       //offset
+	binary.Write(reader, binary.BigEndian, int32(0))       //block
 
-			j := 0
-			for i := 0; i < len(audio.frames); i += 2 {
-				out[j] = int16(audio.frames[i]) | int16(audio.frames[i+1])<<8
-				j++
-			}
-			binary.Write(reader, binary.BigEndian, out)
-			nSamples += len(out)
-			select {
-			case <-done:
-				return
-				break
-			default:
-			}
+	nSamples := 0
+	for audio := range pa.buffer {
+		if len(audio.frames) != 2048*2*2 {
+			return
 		}
-	}()
+
+		j := 0
+		for i := 0; i < len(audio.frames); i += 2 {
+			out[j] = int16(audio.frames[i]) | int16(audio.frames[i+1])<<8
+			j++
+		}
+		binary.Write(reader, binary.BigEndian, out)
+
+		nSamples += len(out)
+	}
+
 	for {
 		select {
 		case <-done:
@@ -127,7 +125,7 @@ func (pa *portAudio) player(w http.ResponseWriter, done chan struct{}) {
 }
 func chk(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 

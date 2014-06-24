@@ -30,6 +30,7 @@
     {{$playListID := .PlID}}
     <div class="container" style="text-align: center;">
       <h1>Playlist: {{.Playlist}}</h1>
+      <h2>Play random track</h2>
      <ul class="list-group">
       {{ range $i, $pl := .Tracks }}
       <li class="list-group-item" data-url="/play/{{$playListID}}/{{$pl.Sort}}">{{$pl.Name}} by {{$pl.Artist}}</li>
@@ -53,6 +54,7 @@
     var dataString = '<audio autoplay="autoplay">';
     dataString += '<source src="'+$(this).data('url')+'" type="audio/mpeg">' + '</audio>';
     $("#player").html(dataString);
+    $(".list-group-item").removeClass("active");
     $(this).addClass("active");
   });
 // var mp3snd = "/play/3/168";

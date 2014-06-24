@@ -32,7 +32,7 @@
       <h1>Playlists</h1>
      <ul class="list-group">
       {{ range $i, $pl := .Playlists }}
-      <li class="list-group-item"><a href="/playlist/{{$pl.Sort}}">{{$pl.Name}}</a></li>
+      <li class="list-group-item"><a href="/playlist/guess/{{$pl.Sort}}">{{$pl.Name}}</a></li>
       {{ end }}
     </ul>
 
