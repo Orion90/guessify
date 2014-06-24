@@ -3,7 +3,7 @@ package main
 import (
 	_ "bufio"
 	"encoding/binary"
-	"flag"
+	_ "flag"
 	"fmt"
 	"github.com/op/go-libspotify/spotify"
 	"io"
@@ -18,11 +18,6 @@ type PlayInfo struct {
 	User     string
 	Playlist *spotify.Playlist
 }
-
-var (
-	appKeyPath = flag.String("key", "spotify_appkey.key", "path to app.key")
-	debug      = flag.Bool("debug", false, "debug output")
-)
 
 type audio struct {
 	format spotify.AudioFormat

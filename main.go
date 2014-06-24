@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/astaxie/beego/session"
 	"github.com/go-martini/martini"
@@ -15,13 +16,18 @@ import (
 
 var globalSessions *session.Manager
 
+var (
+	appKeyPath = flag.String("key", "spotify_appkey.key", "path to app.key")
+	debug      = flag.Bool("debug", false, "debug output")
+)
+
 type Login struct {
 	User string `form:"user"`
 	Pass string `form:"pass"`
 }
 
 func main() {
-
+	flag.Parse()
 	m := martini.Classic()
 	globalSessions, _ = session.NewManager("memory", `{"cookieName":"gosessionid","gclifetime":3600}`)
 	go globalSessions.GC()
