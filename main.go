@@ -103,7 +103,7 @@ func playTrack(w http.ResponseWriter, r *http.Request, params martini.Params, se
 	playlists.Wait()
 	// playlist_count := playlists.Playlists()
 	pid, _ := strconv.Atoi(params["playlist_id"])
-	curr_playlist := playlists.Playlist(pid - 1)
+	curr_playlist, _ := playlists.Playlist(pid - 1)
 	curr_playlist.Wait()
 	tid, _ := strconv.Atoi(params["track_id"])
 	curr_track := curr_playlist.Track(tid - 1).Track()
@@ -151,7 +151,7 @@ func playlists(w http.ResponseWriter, r *http.Request, params martini.Params, se
 
 	var playArr []pl
 	for i := 0; i < playlists.Playlists(); i++ {
-		playlist := playlists.Playlist(i)
+		playlist, _ := playlists.Playlist(i)
 		playlist.Wait()
 		playArr = append(playArr, pl{playlist.Name(), "", i + 1})
 	}
@@ -166,7 +166,7 @@ func playlist(w http.ResponseWriter, r *http.Request, params martini.Params, ses
 	}
 	playlists.Wait()
 	pid, _ := strconv.Atoi(params["playlist_id"])
-	curr_playlist := playlists.Playlist(pid - 1)
+	curr_playlist, _ := playlists.Playlist(pid - 1)
 	curr_playlist.Wait()
 
 	var playArr []pl
