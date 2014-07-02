@@ -57,11 +57,11 @@ func index(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me
 	rend.HTML(200, "me", me)
 }
 func login(rend render.Render, api spotifyweb.SpotifyWeb) {
-	rend.HTML(200, "index", Login{api.GetAuthUrl("http://localhost/auth")})
+	rend.HTML(200, "index", Login{api.GetAuthUrl("http://guessify.net/auth")})
 }
 func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb, c martini.Context) {
 	code := req.URL.Query().Get("code")
-	token, _, err := api.GetToken(code, "http://localhost/auth")
+	token, _, err := api.GetToken(code, "http://guessify.net/auth")
 	if err != nil {
 		println(err)
 	}
