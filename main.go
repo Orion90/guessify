@@ -71,7 +71,7 @@ func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spo
 }
 func reauth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb) {
 	me, _ := api.Profile()
-	if me.Id == "" &&  {
+	if me.Id == "" {
 		token, _ := api.ReAuth(s.Get("refreshtoken").(string))
 		s.Set("usertoken", token)
 	}
