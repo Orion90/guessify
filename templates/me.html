@@ -32,7 +32,7 @@
 <hr>
 <div class="container">
   <div class="row">
-      <div class="col-sm-10"><h1>{{.DisplayName}}</h1></div>
+      <div class="col-sm-10"><h1>{{.Id}}</h1></div>
       <div class="col-sm-2"><a href="/users" class="pull-right">{{range $img := .Images}}<img title="profile image" class="img-circle img-responsive" src="{{$img.Url}}" />{{end}}</a></div>
     </div>
     <div class="row">
@@ -40,16 +40,11 @@
               
           <ul class="list-group">
             <li class="list-group-item text-muted">Profile</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span> 2.13.2014</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> Yesterday</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Real name</strong></span> Joseph Doe</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Username</strong></span> {{.Id}}</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Email</strong></span> {{.Email}}</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Real name</strong></span> {{.DisplayName}}</li>
             
           </ul> 
-               
-          <div class="panel panel-default">
-            <div class="panel-heading">Website <i class="fa fa-link fa-1x"></i></div>
-            <div class="panel-body"><a href="http://bootply.com">bootply.com</a></div>
-          </div>
           
           
           <ul class="list-group">
@@ -58,15 +53,7 @@
             <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span> 13</li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> 37</li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Followers</strong></span> 78</li>
-          </ul> 
-               
-          <div class="panel panel-default">
-            <div class="panel-heading">Social Media</div>
-            <div class="panel-body">
-              <i class="fa fa-facebook fa-2x"></i> <i class="fa fa-github fa-2x"></i> <i class="fa fa-twitter fa-2x"></i> <i class="fa fa-pinterest fa-2x"></i> <i class="fa fa-google-plus fa-2x"></i>
-            </div>
-          </div>
-          
+          </ul>
         </div><!--/col-3-->
       <div class="col-sm-9">
           
@@ -83,105 +70,22 @@
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Label 1</th>
-                      <th>Label 2</th>
-                      <th>Label 3</th>
-                      <th>Label </th>
-                      <th>Label </th>
-                      <th>Label </th>
+                      <th>Name</th>
+                      <th>Count</th>
+                      <th>Public </th>
+                      <th>Collaborative</th>
                     </tr>
                   </thead>
                   <tbody id="items">
+                    {{range $key, $pl := .Playlists.Items}}
                     <tr>
-                      <td>1</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
+                      <td>{{$key}}</td>
+                      <td>{{$pl.Name}}</td>
+                      <td>{{$pl.Tracks.Total}}</td>
+                      <td>{{if $pl.Public}}Yes{{else}}No{{end}}</td>
+                      <td>{{if $pl.Collaborative}}Yes{{else}}No{{end}}</td>
                     </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                     <tr>
-                      <td>8</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>10</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
+                    {{end}}
                   </tbody>
                 </table>
                 <hr>
