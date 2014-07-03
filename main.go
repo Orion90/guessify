@@ -34,7 +34,7 @@ func main() {
 		Charset:    "UTF-8",                    // Sets encoding for json and html content-types. Default is "UTF-8".
 		IndentJSON: true,                       // Output human readable JSON
 	}))
-	m.Get("/", reauth, checkLogin, index)
+	m.Get("/", checkLogin, index)
 	m.Get("/login", login)
 	m.Get("/auth", auth)
 	http.ListenAndServe(":80", m)
@@ -71,7 +71,7 @@ func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spo
 }
 func reauth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb) {
 	me, _ := api.Profile()
-	if me.Id == "" {
+	if me.Id == "" &&  {
 		token, _ := api.ReAuth(s.Get("refreshtoken").(string))
 		s.Set("usertoken", token)
 	}
