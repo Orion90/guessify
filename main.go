@@ -34,7 +34,7 @@ func main() {
 		Charset:    "UTF-8",                    // Sets encoding for json and html content-types. Default is "UTF-8".
 		IndentJSON: true,                       // Output human readable JSON
 	}))
-	m.Get("/", checkLogin, index)
+	m.Get("/", reauth, checkLogin, index)
 	m.Get("/login", login)
 	m.Get("/auth", auth)
 	http.ListenAndServe(":80", m)
