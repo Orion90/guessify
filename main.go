@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	_ "fmt"
 	"github.com/Orion90/spotifyweb"
 	"github.com/go-martini/martini"
@@ -14,6 +15,10 @@ type Login struct {
 	LoginLink string
 }
 
+var (
+	host = flag.String("host", "localhost", "Set the host.")
+)
+
 func setup(clientid, secret string) spotifyweb.SpotifyWeb {
 	return spotifyweb.SpotifyWeb{
 		Endpoint: "https://api.spotify.com/v1/",
@@ -23,6 +28,7 @@ func setup(clientid, secret string) spotifyweb.SpotifyWeb {
 }
 
 func main() {
+	flag.Parse()
 	m := martini.Classic()
 	store := sessions.NewCookieStore([]byte("secret123"))
 	m.Use(sessions.Sessions("spotify_session", store))
@@ -37,7 +43,7 @@ func main() {
 	m.Get("/", checkLogin, index)
 	m.Get("/login", login)
 	m.Get("/auth", auth)
-	http.ListenAndServe(":80", m)
+	http.ListenAndServe(*host+":80", m)
 }
 func checkLogin(rw http.ResponseWriter, req *http.Request,
 	s sessions.Session, c martini.Context, api spotifyweb.SpotifyWeb) {
@@ -57,11 +63,11 @@ func index(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me
 	rend.HTML(200, "me", me)
 }
 func login(rend render.Render, api spotifyweb.SpotifyWeb) {
-	rend.HTML(200, "index", Login{api.GetAuthUrl("http://localhost/auth")})
+	rend.HTML(200, "index", Login{api.GetAuthUrl("http://" + *host + "/auth")})
 }
 func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb, c martini.Context) {
 	code := req.URL.Query().Get("code")
-	token, refresh, err := api.GetToken(code, "http://localhost/auth")
+	token, refresh, err := api.GetToken(code, "http://"+*host+"/auth")
 	if err != nil {
 		println(err)
 	}
