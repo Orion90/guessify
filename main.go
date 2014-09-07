@@ -28,6 +28,7 @@ type Game struct {
 	Name     string `db:"game_name" schema:"name"`
 	Playlist string `db:"game_pl_id" schema:"playlist"`
 	User     string `db:"game_user_id"`
+	Step     string `db:"game_step"`
 }
 
 func SetupDB(c martini.Context) {
@@ -64,10 +65,16 @@ func main() {
 
 	m.Get("/login", login)
 	m.Get("/auth", auth)
+
+	m.Get("/game/:id", checkLogin, SetupDB, playGame)
+
 	http.ListenAndServe(*host, m)
 }
-func checkLogin(rw http.ResponseWriter, req *http.Request,
-	s sessions.Session, c martini.Context, api spotifyweb.SpotifyWeb) {
+func checkLogin(rw http.ResponseWriter,
+	req *http.Request,
+	s sessions.Session,
+	c martini.Context,
+	api spotifyweb.SpotifyWeb) {
 	if s.Get("usertoken") == nil {
 		http.Redirect(rw, req, "/login", http.StatusFound)
 		return
@@ -86,7 +93,12 @@ func checkLogin(rw http.ResponseWriter, req *http.Request,
 	}
 	c.Map(me)
 }
-func playList(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me spotifyweb.Me, c martini.Context, params martini.Params) {
+func playList(rend render.Render,
+	api spotifyweb.SpotifyWeb,
+	s sessions.Session,
+	me spotifyweb.Me,
+	c martini.Context,
+	params martini.Params) {
 	id, _ := strconv.Atoi(params["id"])
 	pl := me.Playlists.Items[id]
 	tracks, err := pl.GetFullTracks()
@@ -100,13 +112,25 @@ func playList(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session,
 
 	rend.HTML(200, "playlist", data)
 }
-func index(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me spotifyweb.Me, c martini.Context) {
+func index(rend render.Render,
+	api spotifyweb.SpotifyWeb,
+	s sessions.Session,
+	me spotifyweb.Me,
+	c martini.Context) {
+
 	rend.HTML(200, "me", me)
 }
-func login(rend render.Render, api spotifyweb.SpotifyWeb) {
+func login(rend render.Render,
+	api spotifyweb.SpotifyWeb) {
+
 	rend.HTML(200, "index", Login{api.GetAuthUrl("http://" + *host + "/auth")})
 }
-func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb, c martini.Context) {
+func auth(rw http.ResponseWriter,
+	req *http.Request,
+	s sessions.Session,
+	api spotifyweb.SpotifyWeb,
+	c martini.Context) {
+
 	code := req.URL.Query().Get("code")
 	token, refresh, err := api.GetToken(code, "http://"+*host+"/auth")
 	if err != nil {
@@ -117,12 +141,24 @@ func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spo
 	s.Set("refreshtoken", refresh)
 	http.Redirect(rw, req, "/", http.StatusFound)
 }
-func newGame(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me spotifyweb.Me, c martini.Context) {
+func newGame(rend render.Render,
+	api spotifyweb.SpotifyWeb,
+	s sessions.Session,
+	me spotifyweb.Me,
+	c martini.Context) {
+
 	pretty.Println(me.Playlists)
 	rend.HTML(200, "newgame", me)
 }
 
-func createNewGame(rw http.ResponseWriter, req *http.Request, rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me spotifyweb.Me, c martini.Context, db *gorp.DbMap) {
+func createNewGame(rw http.ResponseWriter,
+	req *http.Request, rend render.Render,
+	api spotifyweb.SpotifyWeb,
+	s sessions.Session,
+	me spotifyweb.Me,
+	c martini.Context,
+	db *gorp.DbMap) {
+
 	defer db.Db.Close()
 	req.ParseForm()
 	data := new(Game)
@@ -132,7 +168,24 @@ func createNewGame(rw http.ResponseWriter, req *http.Request, rend render.Render
 	db.Insert(data)
 	rend.HTML(200, "newgame", me)
 }
-func reauth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb) {
+
+func playGame(rw http.ResponseWriter,
+	req *http.Request,
+	rend render.Render,
+	api spotifyweb.SpotifyWeb,
+	s sessions.Session,
+	me spotifyweb.Me,
+	c martini.Context,
+	db *gorp.DbMap) {
+
+	defer db.Db.Close()
+}
+
+func reauth(rw http.ResponseWriter,
+	req *http.Request,
+	s sessions.Session,
+	api spotifyweb.SpotifyWeb) {
+
 	me, _ := api.Me()
 	if me.Id == "" {
 		token, _ := api.ReAuth(s.Get("refreshtoken").(string))
