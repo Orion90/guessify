@@ -164,6 +164,7 @@ func createNewGame(rw http.ResponseWriter,
 	data := new(Game)
 	schema.NewDecoder().Decode(data, req.PostForm)
 	data.User = me.Id
+	data.Playlist
 	db.AddTableWithName(Game{}, "t_game").SetKeys(true, "game_id")
 	db.Insert(data)
 	rend.HTML(200, "newgame", me)
@@ -175,10 +176,14 @@ func playGame(rw http.ResponseWriter,
 	api spotifyweb.SpotifyWeb,
 	s sessions.Session,
 	me spotifyweb.Me,
-	c martini.Context,
+	params martini.Params,
 	db *gorp.DbMap) {
 
 	defer db.Db.Close()
+	var game Game
+	id := params["id"]
+	db.SelectOne(&game, "SELECT * FROM t_game WHERE game_id=?", id)
+	pretty.Fprintf(rw, "%v", game)
 }
 
 func reauth(rw http.ResponseWriter,
