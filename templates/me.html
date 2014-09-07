@@ -78,7 +78,7 @@
                   </thead>
                   <tbody id="items">
                     {{range $key, $pl := .Playlists.Items}}
-                    <tr>
+                    <tr data-id="{{$pl.Id}}">
                       <td>{{$key}}</td>
                       <td>{{$pl.Name}}</td>
                       <td>{{$pl.Tracks.Total}}</td>
