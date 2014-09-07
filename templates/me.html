@@ -80,7 +80,7 @@
                     {{range $key, $pl := .Playlists.Items}}
                     <tr>
                       <td>{{$key}}</td>
-                      <td>{{$pl.Name}}</td>
+                      <td><a href="/playlist/{{$key}}">{{$pl.Name}}</a></td>
                       <td>{{$pl.Tracks.Total}}</td>
                       <td>{{if $pl.Public}}Yes{{else}}No{{end}}</td>
                       <td>{{if $pl.Collaborative}}Yes{{else}}No{{end}}</td>
