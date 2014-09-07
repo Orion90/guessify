@@ -117,8 +117,6 @@ func auth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spo
 	s.Set("refreshtoken", refresh)
 	http.Redirect(rw, req, "/", http.StatusFound)
 }
-<<<<<<< HEAD
-
 func newGame(rend render.Render, api spotifyweb.SpotifyWeb, s sessions.Session, me spotifyweb.Me, c martini.Context) {
 	pretty.Println(me.Playlists)
 	rend.HTML(200, "newgame", me)
@@ -133,14 +131,13 @@ func createNewGame(rw http.ResponseWriter, req *http.Request, rend render.Render
 	db.AddTableWithName(Game{}, "t_game").SetKeys(true, "game_id")
 	db.Insert(data)
 	rend.HTML(200, "newgame", me)
-=======
+}
 func reauth(rw http.ResponseWriter, req *http.Request, s sessions.Session, api spotifyweb.SpotifyWeb) {
 	me, _ := api.Me()
 	if me.Id == "" {
 		token, _ := api.ReAuth(s.Get("refreshtoken").(string))
 		s.Set("usertoken", token)
 	}
->>>>>>> 01e8bccbba40c87c65f2247b04623649ca484fa3
 }
 
 type PlaylistData struct {
